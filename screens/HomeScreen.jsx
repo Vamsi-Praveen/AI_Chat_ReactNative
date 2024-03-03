@@ -57,6 +57,7 @@ const HomeScreen = () => {
             }
         }
         fetchImageData(image, newMsg.message, setLoading)
+        setSendingImage(false)
     }
     const formatText = (text) => {
         return text.replace(/\*\*\g/, '')
