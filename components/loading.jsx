@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
 const Loading = () => {
+    //simple loading with three dots
     return (
         <View style={styles.loadContainer}>
             <View style={[styles.loader]} />

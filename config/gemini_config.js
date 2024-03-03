@@ -1,5 +1,6 @@
 import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 
+//configuration files of gemini model
 export const geminiAIConfig = {
     textModel: 'gemini-pro',
     multiModel: 'gemini-pro-vision',

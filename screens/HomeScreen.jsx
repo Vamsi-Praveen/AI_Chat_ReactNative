@@ -9,6 +9,8 @@ import { imageToBase64 } from '../helpers/imageToBase64'
 
 
 const HomeScreen = () => {
+
+    //states for all required things
     const [inputText, setInputText] = useState('')
     const [loading, setLoading] = useState(false)
     const [timeStamp, setTimeStamp] = useState('')
@@ -18,25 +20,35 @@ const HomeScreen = () => {
     const [base64, setBase64] = useState(null)
     const [mimeType, setMimeType] = useState(null)
     const flatListRef = useRef(null)
+
+    //whenever user is typing it is sending to setInputText function
     const handleInput = (text) => {
         setInputText(text)
     }
+    //sending text message 
     const handleMessage = () => {
+        //creating a time stamp for comapring the new message time
         const newTimeStamp = Date.now()
+        //creating a newmsg with type text and role user
         let newMsg = {
             role: 'user',
             message: inputText,
             timeStamp: newTimeStamp,
             type: 'text'
         }
+        //appending the new message to chat array
         setChat(prevChat => [...prevChat, newMsg])
         setInputText('')
         setTimeStamp(newTimeStamp)
+        //auto scroll to down of the flatlist using reference
         flatListRef?.current?.scrollToEnd({ animated: true });
+        //function responsible  for sendimg an text if any
         fetchData(newMsg.message, setLoading)
     }
     const handleSendImage = () => {
+        //this is the function for sending the images
         const newTimeStamp = Date.now()
+        //creating an object with role user and type image and specify the image
         let newMsg = {
             role: 'user',
             message: inputText,
@@ -48,64 +60,75 @@ const HomeScreen = () => {
         setInputText('')
         setTimeStamp(newTimeStamp)
         flatListRef?.current?.scrollToEnd({ animated: true });
+        //after sending the image need to set the image to null as it takes for next message also
         setSelectedImage(null)
-
+        //this is typeof image data for gemini ai generative part
         const image = {
             inlineData: {
                 data: base64,
                 mimeType: mimeType
             }
         }
+        //the function responsible for sending the request with image
         fetchImageData(image, newMsg.message, setLoading)
+        //after the execution completd need to set image sending to false as it interputs the next message
         setSendingImage(false)
     }
-    const formatText = (text) => {
-        return text.replace(/\*\*\g/, '')
-    }
+    // const formatText = (text) => {
+    //     //this function is respoinsble for removal of **'s from response
+    //     return text.replace(/\*\*\g/, '')
+    // }
     const fetchData = async (prompt, setLoading) => {
         const response = await fetchResponse(prompt, setLoading);
-        const formattedText = formatText(response)
+        // const formattedText = formatText(response)
         if (response) {
+            //creating a ouput as chat object inserting to chat []
             let modelMsg = {
                 role: 'model',
-                message: formattedText,
+                message: response,
                 type: 'text'
             }
             setChat(prevChat => [...prevChat, modelMsg])
         }
     }
+    //the function call for sending requues to backend function for images
     const fetchImageData = async (image, prompt, setLoading) => {
         const response = await fetchImageResponse(image, prompt, setLoading)
-        const formattedText = formatText(response)
+        // const formattedText = formatText(response)
         if (response) {
             let modelMsg = {
                 role: 'model',
-                message: formattedText,
+                message: response,
                 type: 'text'
             }
             setChat(prevChat => [...prevChat, modelMsg])
         }
     }
+    //when click on the image icon need to open library to select the images by expo-document-picker library
     const openDocument = async () => {
         try {
             const image = await DocumentPicker.getDocumentAsync({
                 type: 'image/*'
             })
+            //selecting the documents of type images
             if (image) {
                 setMimeType(image?.assets?.[0]?.mimeType)
             }
+            //if image is fetched succesfully we need to take uri and store for displaying on chatui
             if (image?.assets[0]?.uri) {
                 setSelectedImage(image?.assets?.[0]?.uri)
                 setSendingImage(true)
+                //converting the image to base64 for processing
                 setBase64(await imageToBase64(image?.assets?.[0]?.uri))
             }
         } catch (err) {
             console.log(err)
         }
     }
-
+    //checking on condition if sending textmessage send handlemessage otherwise handleimage handler
     const onPress = sendingImage ? handleSendImage : handleMessage
     return (
+        //onContentSizeChange and onlayout is used here for autoscroll to bottom
         <View style={{ paddingHorizontal: 5, flex: 1 }}>
             {
                 chat.length > 0 && <View style={{

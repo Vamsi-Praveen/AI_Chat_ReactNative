@@ -4,7 +4,9 @@ import * as Speech from "expo-speech"
 import Icon from 'react-native-vector-icons/Ionicons'
 
 const ChatMessage = ({ messageData, role, type }) => {
+    //this function is used for handling speech
     const handleSpeech = async () => {
+        //if alreading speaking stop and speack the data
         if (await Speech.isSpeakingAsync()) {
             Speech.stop();
         }
@@ -12,6 +14,7 @@ const ChatMessage = ({ messageData, role, type }) => {
             Speech.speak(messageData.message)
         }
     }
+    //here this function is used to remove ** and return as bold
     const renderBoldText = (text) => {
         const parts = text.split('**');
         return parts.map((part, index) => {
@@ -28,7 +31,12 @@ const ChatMessage = ({ messageData, role, type }) => {
     const hours = date.getHours()
     const min = date.getMinutes()
     const formattedTime = `${hours}:${min}`
+
+    //the above functions for time
     return (
+        //based on conditions rendering differnt items like if role is user userchat style or modelchat style
+        //mic icon is only need to show on model role
+        //we render two components one is image and text component based on type
         <>
             {
                 type == "text" ? (
