@@ -28,8 +28,7 @@ const HomeScreen = () => {
         setInputText('')
         setTimeStamp(newTimeStamp)
         flatListRef?.current?.scrollToEnd({ animated: true });
-        console.log(selectedImage)
-        // fetchData(newMsg.message, setLoading)
+        fetchData(newMsg.message, setLoading)
     }
     const formatText = (text) => {
         return text.replace(/\*\*\g/, '')

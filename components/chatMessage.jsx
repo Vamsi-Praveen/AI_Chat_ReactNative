@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as Speech from "expo-speech"
 import Icon from 'react-native-vector-icons/Ionicons'
 
-const ChatMessage = ({ messageData, role }) => {
+const ChatMessage = ({ messageData, role,type }) => {
     const handleSpeech = async () => {
         if (await Speech.isSpeakingAsync()) {
             Speech.stop();
