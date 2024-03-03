@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react'
 import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { fetchResponse } from '../api/gemini'
+import { fetchImageResponse, fetchResponse } from '../api/gemini'
 import Chat from '../components/Chat'
 import InputSender from "../components/inputSender"
 import * as DocumentPicker from 'expo-document-picker';
 import Icon from "react-native-vector-icons/Ionicons"
+import { imageToBase64 } from '../helpers/imageToBase64'
 
 
 const HomeScreen = () => {
@@ -14,6 +15,8 @@ const HomeScreen = () => {
     const [selectedImage, setSelectedImage] = useState(null)
     const [sendingImage, setSendingImage] = useState(false)
     const [chat, setChat] = useState([])
+    const [base64, setBase64] = useState(null)
+    const [mimeType, setMimeType] = useState(null)
     const flatListRef = useRef(null)
     const handleInput = (text) => {
         setInputText(text)
@@ -30,7 +33,7 @@ const HomeScreen = () => {
         setInputText('')
         setTimeStamp(newTimeStamp)
         flatListRef?.current?.scrollToEnd({ animated: true });
-        // fetchData(newMsg.message, setLoading)
+        fetchData(newMsg.message, setLoading)
     }
     const handleSendImage = () => {
         const newTimeStamp = Date.now()
@@ -46,6 +49,14 @@ const HomeScreen = () => {
         setTimeStamp(newTimeStamp)
         flatListRef?.current?.scrollToEnd({ animated: true });
         setSelectedImage(null)
+
+        const image = {
+            inlineData: {
+                data: base64,
+                mimeType: mimeType
+            }
+        }
+        fetchImageData(image, newMsg.message, setLoading)
     }
     const formatText = (text) => {
         return text.replace(/\*\*\g/, '')
@@ -62,14 +73,30 @@ const HomeScreen = () => {
             setChat(prevChat => [...prevChat, modelMsg])
         }
     }
+    const fetchImageData = async (image, prompt, setLoading) => {
+        const response = await fetchImageResponse(image, prompt, setLoading)
+        const formattedText = formatText(response)
+        if (response) {
+            let modelMsg = {
+                role: 'model',
+                message: formattedText,
+                type: 'text'
+            }
+            setChat(prevChat => [...prevChat, modelMsg])
+        }
+    }
     const openDocument = async () => {
         try {
             const image = await DocumentPicker.getDocumentAsync({
                 type: 'image/*'
             })
-            if (image.assets[0].uri) {
-                setSelectedImage(image.assets[0].uri)
+            if (image) {
+                setMimeType(image?.assets?.[0]?.mimeType)
+            }
+            if (image?.assets[0]?.uri) {
+                setSelectedImage(image?.assets?.[0]?.uri)
                 setSendingImage(true)
+                setBase64(await imageToBase64(image?.assets?.[0]?.uri))
             }
         } catch (err) {
             console.log(err)
@@ -110,7 +137,7 @@ const HomeScreen = () => {
                 selectedImage && <View style={{ margin: 8 }}>
                     <Image source={{ uri: selectedImage }} style={{ height: 60, width: 60, position: 'relative' }} />
 
-                    <TouchableOpacity onPress={() => setSelectedImage(null)} style={{ position: 'absolute', top: 0, right: 0, padding: 5 }}>
+                    <TouchableOpacity onPress={() => { setSelectedImage(null), setBase64(null) }} style={{ position: 'absolute', top: 0, right: 0, padding: 5 }}>
                         <Icon name='close' size={18} />
                     </TouchableOpacity>
                 </View>

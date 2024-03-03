@@ -28,7 +28,6 @@ const ChatMessage = ({ messageData, role, type }) => {
     const hours = date.getHours()
     const min = date.getMinutes()
     const formattedTime = `${hours}:${min}`
-    console.log(type)
     return (
         <>
             {

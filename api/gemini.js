@@ -24,6 +24,8 @@ export const fetchImageResponse = async (image, prompt, setLoading) => {
         console.log(prompt)
         const model = new GoogleGenerativeAI(geminiAIConfig.apiKey)
         const genAI = model.getGenerativeModel({ model: geminiAIConfig.multiModel })
+        const response = await genAI.generateContent([image, prompt])
+        return response.response?.candidates?.[0]?.content?.parts?.[0]?.text || 'Try Again';
 
     } catch (error) {
         console.log(error)
