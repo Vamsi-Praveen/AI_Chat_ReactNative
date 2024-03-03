@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native'
 import Icon from "react-native-vector-icons/Feather"
 
-const InputSender = ({ onChange, text, onPress }) => {
+const InputSender = ({ onChange, text, onPress, openDocument }) => {
     const [inputHeight, setInputHeight] = useState(30)
     const handleInputHeight = (contentWidth, contentHeight) => {
         const minHeight = 30; // Set a minimum height
@@ -17,8 +17,11 @@ const InputSender = ({ onChange, text, onPress }) => {
             <TextInput placeholder='Type Your Query Here...' style={[styles.input, { height: inputHeight }]} onChangeText={onChange}
                 value={text} multiline onContentSizeChange={(e) => handleInputHeight(e.nativeEvent.contentSize.width, e.nativeEvent.contentSize.height)}
             />
+            <TouchableOpacity style={styles.button} disabled={text === ''} onPress={openDocument}>
+                <Icon name='image' size={22} color={text == '' ? 'lightgrey' : 'black'} />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.button} disabled={text === ''} onPress={onPress}>
-                <Icon name='send' size={22} color={text == '' ? 'lightgrey' : 'black'} style={{ transform: [{ rotate: '36deg' }] }} />
+                <Icon name='send' size={22} color={text == '' ? 'lightgrey' : 'black'} style={{ transform: [{ rotate: '40deg' }] }} />
             </TouchableOpacity>
         </View>
     )
@@ -37,7 +40,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 0.3
     },
     input: {
-        width: '90%',
+        flex: 1,
         backgroundColor: 'white',
         fontSize: 16,
         fontFamily: 'DmSans',

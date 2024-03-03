@@ -1,16 +1,17 @@
 import React, { useRef, useState } from 'react'
-import { FlatList, Image, StyleSheet, View } from 'react-native'
-import ChatMessage from '../components/chatMessage'
-import InputSender from "../components/inputSender"
-import Loading from '../components/loading'
-import Chat from '../components/Chat'
+import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { fetchResponse } from '../api/gemini'
+import Chat from '../components/Chat'
+import InputSender from "../components/inputSender"
+import * as DocumentPicker from 'expo-document-picker';
+import Icon from "react-native-vector-icons/Ionicons"
 
 
 const HomeScreen = () => {
     const [inputText, setInputText] = useState('')
     const [loading, setLoading] = useState(false)
     const [timeStamp, setTimeStamp] = useState('')
+    const [selectedImage, setSelectedImage] = useState(null)
     const [chat, setChat] = useState([])
     const flatListRef = useRef(null)
     const handleInput = (text) => {
@@ -27,7 +28,8 @@ const HomeScreen = () => {
         setInputText('')
         setTimeStamp(newTimeStamp)
         flatListRef?.current?.scrollToEnd({ animated: true });
-        fetchData(newMsg.message, setLoading)
+        console.log(selectedImage)
+        // fetchData(newMsg.message, setLoading)
     }
     const formatText = (text) => {
         return text.replace(/\*\*\g/, '')
@@ -41,6 +43,18 @@ const HomeScreen = () => {
                 message: formattedText,
             }
             setChat(prevChat => [...prevChat, modelMsg])
+        }
+    }
+    const openDocument = async () => {
+        try {
+            const image = await DocumentPicker.getDocumentAsync({
+                type: 'image/*'
+            })
+            if (image.assets[0].uri) {
+                setSelectedImage(image.assets[0].uri)
+            }
+        } catch (err) {
+            console.log(err)
         }
     }
     return (
@@ -72,8 +86,17 @@ const HomeScreen = () => {
                     </View>
                 )
             }
+            {
+                selectedImage && <View style={{ marginHorizontal: 10 }}>
+                    <Image source={{ uri: selectedImage }} style={{ height: 60, width: 60, position: 'relative' }} />
+
+                    <TouchableOpacity onPress={() => setSelectedImage(null)} style={{ position: 'absolute', top: 0, right: 0, padding: 5 }}>
+                        <Icon name='close' size={18} />
+                    </TouchableOpacity>
+                </View>
+            }
             <View style={{ justifyContent: "flex-end" }}>
-                <InputSender onChange={handleInput} text={inputText} onPress={handleMessage} />
+                <InputSender onChange={handleInput} text={inputText} onPress={handleMessage} openDocument={openDocument} />
             </View>
         </View>
 
