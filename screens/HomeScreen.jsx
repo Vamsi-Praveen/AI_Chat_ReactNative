@@ -46,6 +46,13 @@ const HomeScreen = () => {
     return (
         <View style={{ paddingHorizontal: 5, flex: 1 }}>
             {
+                chat.length > 0 && <View style={{
+                    alignItems: 'center', justifyContent: 'center', paddingVertical: 4
+                }}>
+                    <Image source={require('../assets/gemini.png')} resizeMode='contain' style={{ height: 40, width: 40 }} />
+                </View>
+            }
+            {
                 chat.length > 0 ? (
                     <FlatList
                         ref={flatListRef}
