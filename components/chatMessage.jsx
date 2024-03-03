@@ -9,7 +9,7 @@ const ChatMessage = ({ messageData, role, type }) => {
             Speech.stop();
         }
         else {
-            Speech.speak(messageData)
+            Speech.speak(messageData.message)
         }
     }
     const renderBoldText = (text) => {
