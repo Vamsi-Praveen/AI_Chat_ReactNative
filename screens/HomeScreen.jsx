@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { FlatList, StyleSheet, View } from 'react-native'
+import { FlatList, Image, StyleSheet, View } from 'react-native'
 import ChatMessage from '../components/chatMessage'
 import InputSender from "../components/inputSender"
 import Loading from '../components/loading'
@@ -12,7 +12,7 @@ const HomeScreen = () => {
     const [loading, setLoading] = useState(false)
     const [timeStamp, setTimeStamp] = useState('')
     const [chat, setChat] = useState([])
-    const flatListRef = useRef()
+    const flatListRef = useRef(null)
     const handleInput = (text) => {
         setInputText(text)
     }
@@ -26,7 +26,7 @@ const HomeScreen = () => {
         setChat(prevChat => [...prevChat, newMsg])
         setInputText('')
         setTimeStamp(newTimeStamp)
-        flatListRef.current.scrollToEnd({ animated: true });
+        flatListRef?.current?.scrollToEnd({ animated: true });
         fetchData(newMsg.message, setLoading)
     }
     const formatText = (text) => {
@@ -45,18 +45,26 @@ const HomeScreen = () => {
     }
     return (
         <View style={{ paddingHorizontal: 5, flex: 1 }}>
-            <FlatList
-                ref={flatListRef}
-                showsVerticalScrollIndicator={false}
-                data={chat}
-                renderItem={({ item }) => {
-                    return <Chat data={item} loading={loading} timeStamp={timeStamp} />
-                }}
-                keyExtractor={(item, index) => index.toString()}
-                contentContainerStyle={styles.chatScreen}
-                onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: true })}
-                onLayout={() => flatListRef.current.scrollToEnd({ animated: true })}
-            />
+            {
+                chat.length > 0 ? (
+                    <FlatList
+                        ref={flatListRef}
+                        showsVerticalScrollIndicator={false}
+                        data={chat}
+                        renderItem={({ item }) => {
+                            return <Chat data={item} loading={loading} timeStamp={timeStamp} />
+                        }}
+                        keyExtractor={(item, index) => index.toString()}
+                        contentContainerStyle={styles.chatScreen}
+                        onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: true })}
+                        onLayout={() => flatListRef.current.scrollToEnd({ animated: true })}
+                    />
+                ) : (
+                    <View style={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Image source={require('../assets/gemini.png')} resizeMode='contain' style={{ height: 100, width: 100 }} />
+                    </View>
+                )
+            }
             <View style={{ justifyContent: "flex-end" }}>
                 <InputSender onChange={handleInput} text={inputText} onPress={handleMessage} />
             </View>
