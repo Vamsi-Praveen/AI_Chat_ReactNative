@@ -16,3 +16,19 @@ export const fetchResponse = async (prompt, setLoading) => {
         setLoading(false)
     }
 }
+
+
+export const fetchImageResponse = async (image, prompt, setLoading) => {
+    try {
+        setLoading(true)
+        console.log(prompt)
+        const model = new GoogleGenerativeAI(geminiAIConfig.apiKey)
+        const genAI = model.getGenerativeModel({ model: geminiAIConfig.multiModel })
+
+    } catch (error) {
+        console.log(error)
+    }
+    finally {
+        setLoading(false)
+    }
+}

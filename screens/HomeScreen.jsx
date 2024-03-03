@@ -12,6 +12,7 @@ const HomeScreen = () => {
     const [loading, setLoading] = useState(false)
     const [timeStamp, setTimeStamp] = useState('')
     const [selectedImage, setSelectedImage] = useState(null)
+    const [sendingImage, setSendingImage] = useState(false)
     const [chat, setChat] = useState([])
     const flatListRef = useRef(null)
     const handleInput = (text) => {
@@ -22,13 +23,29 @@ const HomeScreen = () => {
         let newMsg = {
             role: 'user',
             message: inputText,
-            timeStamp: newTimeStamp
+            timeStamp: newTimeStamp,
+            type: 'text'
         }
         setChat(prevChat => [...prevChat, newMsg])
         setInputText('')
         setTimeStamp(newTimeStamp)
         flatListRef?.current?.scrollToEnd({ animated: true });
-        fetchData(newMsg.message, setLoading)
+        // fetchData(newMsg.message, setLoading)
+    }
+    const handleSendImage = () => {
+        const newTimeStamp = Date.now()
+        let newMsg = {
+            role: 'user',
+            message: inputText,
+            type: 'image',
+            timeStamp: newTimeStamp,
+            image: selectedImage
+        }
+        setChat(prevChat => [...prevChat, newMsg])
+        setInputText('')
+        setTimeStamp(newTimeStamp)
+        flatListRef?.current?.scrollToEnd({ animated: true });
+        setSelectedImage(null)
     }
     const formatText = (text) => {
         return text.replace(/\*\*\g/, '')
@@ -40,6 +57,7 @@ const HomeScreen = () => {
             let modelMsg = {
                 role: 'model',
                 message: formattedText,
+                type: 'text'
             }
             setChat(prevChat => [...prevChat, modelMsg])
         }
@@ -51,11 +69,14 @@ const HomeScreen = () => {
             })
             if (image.assets[0].uri) {
                 setSelectedImage(image.assets[0].uri)
+                setSendingImage(true)
             }
         } catch (err) {
             console.log(err)
         }
     }
+
+    const onPress = sendingImage ? handleSendImage : handleMessage
     return (
         <View style={{ paddingHorizontal: 5, flex: 1 }}>
             {
@@ -86,7 +107,7 @@ const HomeScreen = () => {
                 )
             }
             {
-                selectedImage && <View style={{ marginHorizontal: 10 }}>
+                selectedImage && <View style={{ margin: 8 }}>
                     <Image source={{ uri: selectedImage }} style={{ height: 60, width: 60, position: 'relative' }} />
 
                     <TouchableOpacity onPress={() => setSelectedImage(null)} style={{ position: 'absolute', top: 0, right: 0, padding: 5 }}>
@@ -95,7 +116,7 @@ const HomeScreen = () => {
                 </View>
             }
             <View style={{ justifyContent: "flex-end" }}>
-                <InputSender onChange={handleInput} text={inputText} onPress={handleMessage} openDocument={openDocument} />
+                <InputSender onChange={handleInput} text={inputText} onPress={onPress} openDocument={openDocument} />
             </View>
         </View>
 

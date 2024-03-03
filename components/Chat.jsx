@@ -6,7 +6,7 @@ import Loading from './loading'
 const Chat = ({ data, loading, timeStamp }) => {
     return (
         <View>
-            <ChatMessage messageData={data.message} role={data.role} />
+            <ChatMessage messageData={data} role={data.role} type={data.type} />
             {loading && data.timeStamp === timeStamp && <Loading />}
         </View>
     )

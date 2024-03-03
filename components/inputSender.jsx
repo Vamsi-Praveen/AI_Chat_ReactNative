@@ -17,8 +17,8 @@ const InputSender = ({ onChange, text, onPress, openDocument }) => {
             <TextInput placeholder='Type Your Query Here...' style={[styles.input, { height: inputHeight }]} onChangeText={onChange}
                 value={text} multiline onContentSizeChange={(e) => handleInputHeight(e.nativeEvent.contentSize.width, e.nativeEvent.contentSize.height)}
             />
-            <TouchableOpacity style={styles.button} disabled={text === ''} onPress={openDocument}>
-                <Icon name='image' size={22} color={text == '' ? 'lightgrey' : 'black'} />
+            <TouchableOpacity style={styles.button} onPress={openDocument}>
+                <Icon name='image' size={22} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} disabled={text === ''} onPress={onPress}>
                 <Icon name='send' size={22} color={text == '' ? 'lightgrey' : 'black'} style={{ transform: [{ rotate: '40deg' }] }} />
