@@ -59,7 +59,6 @@ const HomeScreen = () => {
         setChat(prevChat => [...prevChat, newMsg])
         setInputText('')
         setTimeStamp(newTimeStamp)
-        flatListRef?.current?.scrollToEnd({ animated: true });
         //after sending the image need to set the image to null as it takes for next message also
         setSelectedImage(null)
         //this is typeof image data for gemini ai generative part
@@ -73,6 +72,7 @@ const HomeScreen = () => {
         fetchImageData(image, newMsg.message, setLoading)
         //after the execution completd need to set image sending to false as it interputs the next message
         setSendingImage(false)
+        flatListRef?.current?.scrollToEnd({ animated: true });
     }
     // const formatText = (text) => {
     //     //this function is respoinsble for removal of **'s from response

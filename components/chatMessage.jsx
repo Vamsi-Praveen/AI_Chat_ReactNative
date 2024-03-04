@@ -41,7 +41,7 @@ const ChatMessage = ({ messageData, role, type }) => {
             {
                 type == "text" ? (
                     <View style={[styles.chatbubble, role === 'user' ? styles.userChat : styles.modelChat, { height: 'auto' }]}>
-                        <Text style={[styles.chat, role === 'model' && { color: 'white' }]}>{renderBoldText(messageData.message)}</Text>
+                        <Text style={[styles.chat, { color: 'white' }]}>{renderBoldText(messageData.message)}</Text>
                         {
                             role == 'user' && <Text style={styles.date}>{formattedTime}</Text>
                         }
@@ -52,13 +52,15 @@ const ChatMessage = ({ messageData, role, type }) => {
                 ) :
                     (
                         <View style={[styles.chatbubble, styles.userChat, { height: 'auto', gap: 4 }]}>
-                            <Image
-                                source={{ uri: messageData.image }}
-                                resizeMode='contain'
-                                style={{ height: 120, width: 120, borderRadius: 4 }}
-                            />
+                            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                <Image
+                                    source={{ uri: messageData.image }}
+                                    resizeMode='cover'
+                                    style={{ height: 200, width: 200, borderRadius: 4 }}
+                                />
+                            </View>
                             <View>
-                                <Text style={[styles.chat]}>{messageData.message}</Text>
+                                <Text style={[styles.chat, { color: 'white' }]}>{messageData.message}</Text>
                                 {
                                     role == 'user' && <Text style={styles.date}>{formattedTime}</Text>
                                 }
@@ -74,15 +76,15 @@ export default ChatMessage
 
 const styles = StyleSheet.create({
     chatbubble: {
-        marginBottom: 10,
-        marginHorizontal: 10,
-        paddingHorizontal: 10,
+        marginBottom: 16,
+        marginHorizontal: 15,
+        paddingHorizontal: 12,
         paddingVertical: 6,
-        borderRadius: 10,
-        backgroundColor: 'lightblue',
-        maxWidth: '70%',
+        borderRadius: 8,
+        backgroundColor: '#537836',
+        maxWidth: '72%',
         justifyContent: 'center',
-        minWidth: '10%',
+        minWidth: '23%',
     },
     chat: {
         fontFamily: 'DmSans',
@@ -98,7 +100,8 @@ const styles = StyleSheet.create({
     date: {
         fontFamily: 'Poppins',
         fontSize: 10,
-        alignSelf: 'flex-end'
+        alignSelf: 'flex-end',
+        color: 'white'
     },
     boldText: {
         fontWeight: 'bold'

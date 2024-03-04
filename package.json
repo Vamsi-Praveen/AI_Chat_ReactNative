@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
+    "eas-cli": "^7.3.0",
     "expo": "~50.0.8",
     "expo-document-picker": "^11.10.1",
     "expo-file-system": "^16.0.7",
