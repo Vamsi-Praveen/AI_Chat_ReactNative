@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react'
-import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { FlatList, Image, StyleSheet, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import { fetchImageResponse, fetchResponse } from '../api/gemini'
 import Chat from '../components/Chat'
 import InputSender from "../components/inputSender"
@@ -21,6 +21,19 @@ const HomeScreen = () => {
     const [mimeType, setMimeType] = useState(null)
     const flatListRef = useRef(null)
 
+    //checking for errors
+    const [error, setError] = useState(false)
+
+
+
+    //if error there need to show toast
+
+    useEffect(() => {
+        if (error) {
+            ToastAndroid.show('An Error Occured', ToastAndroid.BOTTOM, ToastAndroid.SHORT);
+            setError(false)
+        }
+    }, [error])
     //whenever user is typing it is sending to setInputText function
     const handleInput = (text) => {
         setInputText(text)
@@ -43,7 +56,7 @@ const HomeScreen = () => {
         //auto scroll to down of the flatlist using reference
         flatListRef?.current?.scrollToEnd({ animated: true });
         //function responsible  for sendimg an text if any
-        fetchData(newMsg.message, setLoading)
+        fetchData(newMsg.message, setLoading, setError)
     }
     const handleSendImage = () => {
         //this is the function for sending the images
@@ -69,7 +82,7 @@ const HomeScreen = () => {
             }
         }
         //the function responsible for sending the request with image
-        fetchImageData(image, newMsg.message, setLoading)
+        fetchImageData(image, newMsg.message, setLoading, setError)
         //after the execution completd need to set image sending to false as it interputs the next message
         setSendingImage(false)
         flatListRef?.current?.scrollToEnd({ animated: true });
@@ -78,8 +91,8 @@ const HomeScreen = () => {
     //     //this function is respoinsble for removal of **'s from response
     //     return text.replace(/\*\*\g/, '')
     // }
-    const fetchData = async (prompt, setLoading) => {
-        const response = await fetchResponse(prompt, setLoading);
+    const fetchData = async (prompt, setLoading, setError) => {
+        const response = await fetchResponse(prompt, setLoading, setError);
         // const formattedText = formatText(response)
         if (response) {
             //creating a ouput as chat object inserting to chat []
@@ -92,8 +105,8 @@ const HomeScreen = () => {
         }
     }
     //the function call for sending requues to backend function for images
-    const fetchImageData = async (image, prompt, setLoading) => {
-        const response = await fetchImageResponse(image, prompt, setLoading)
+    const fetchImageData = async (image, prompt, setLoading, setError) => {
+        const response = await fetchImageResponse(image, prompt, setLoading, setError)
         // const formattedText = formatText(response)
         if (response) {
             let modelMsg = {
@@ -129,7 +142,7 @@ const HomeScreen = () => {
     const onPress = sendingImage ? handleSendImage : handleMessage
     return (
         //onContentSizeChange and onlayout is used here for autoscroll to bottom
-        <View style={{ paddingHorizontal: 5, flex: 1 }}>
+        <View style={{ paddingHorizontal: 5, flex: 1, backgroundColor: 'white' }}>
             {
                 chat.length > 0 && <View style={{
                     alignItems: 'center', justifyContent: 'center', paddingVertical: 4

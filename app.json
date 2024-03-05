@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "GChat",
+    "name": "G-Chat",
     "slug": "GeminiAI",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/gemini.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "cover",
+      "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
@@ -19,10 +19,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/gemini.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.vamsi_nakka.GeminiAI"
+      "package": "com.vamsi_nakka.GeminiAI",
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

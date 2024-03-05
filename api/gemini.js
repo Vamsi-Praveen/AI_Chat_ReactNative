@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai"
 
 
 //text response function
-export const fetchResponse = async (prompt, setLoading) => {
+export const fetchResponse = async (prompt, setLoading,setError) => {
     try {
         //we are setting the setloading to true for updating the loading function that helps user to know api is generating
         setLoading(true)
@@ -15,6 +15,7 @@ export const fetchResponse = async (prompt, setLoading) => {
         return response.response?.candidates?.[0]?.content?.parts?.[0]?.text || 'Try Again';
     } catch (error) {
         console.log(error)
+        setError(true)
     }
     finally {//after getting the input turnoff the loading
         setLoading(false)
@@ -22,7 +23,7 @@ export const fetchResponse = async (prompt, setLoading) => {
 }
 
 //image response function
-export const fetchImageResponse = async (image, prompt, setLoading) => {
+export const fetchImageResponse = async (image, prompt, setLoading,setError) => {
     try {
         setLoading(true)
         console.log(prompt)
@@ -34,6 +35,7 @@ export const fetchImageResponse = async (image, prompt, setLoading) => {
 
     } catch (error) {
         console.log(error)
+        setError(true)
     }
     finally {
         setLoading(false)
